@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplitType from "split-type";
@@ -12,12 +12,27 @@ const RevealText: React.FC = () => {
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const spotlightRef = useRef<HTMLDivElement | null>(null);
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile screens
   useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768); // mobile breakpoint
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // GSAP scroll animation (desktop/tablet only)
+  useEffect(() => {
+    if (isMobile) return; // skip animation on mobile
+
     const ctx = gsap.context(() => {
-      // Split text into words
       const text = new SplitType(textRef.current!, { types: "words" });
 
-      // Scroll timeline
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: container.current,
@@ -28,41 +43,20 @@ const RevealText: React.FC = () => {
       });
 
       // Initial state
-      gsap.set(text.words, {
-        opacity: 0.2,
-        color: "#b3b3b3", // softer gray start
-      });
+      gsap.set(text.words, { opacity: 0.2, color: "#b3b3b3" });
 
       // Word fade + brighten
-      tl.to(
-        text.words,
-        {
-          opacity: 1,
-          color: "#ffffff", // final strong white
-          stagger: 0.1,
-        },
-        0
-      );
+      tl.to(text.words, { opacity: 1, color: "#ffffff", stagger: 0.1 }, 0);
 
       // Label + text shadow
       tl.to(
         [textRef.current, labelRef.current],
-        {
-          color: "#ffffff",
-          textShadow: "0px 0px 12px rgba(255,255,255,0.7)",
-        },
+        { color: "#ffffff", textShadow: "0px 0px 12px rgba(255,255,255,0.7)" },
         0
       );
 
       // Dark vignette overlay
-      tl.to(
-        overlayRef.current,
-        {
-          opacity: 0.28,
-          ease: "none",
-        },
-        0
-      );
+      tl.to(overlayRef.current, { opacity: 0.28, ease: "none" }, 0);
 
       // Spotlight boom
       tl.fromTo(
@@ -74,12 +68,11 @@ const RevealText: React.FC = () => {
     }, container);
 
     return () => ctx.revert();
-  }, []);
+  }, [isMobile]);
 
   return (
     <section ref={container} className="relative w-full bg-black text-white" id="about">
-      {/* tall section for scroll space */}
-      <div className="relative h-[550vh]">
+      <div className={isMobile ? "relative h-auto py-32" : "relative h-[550vh]"}>
         {/* sticky viewport */}
         <div className="sticky top-0 h-screen flex items-center justify-center px-6">
           <p
@@ -97,23 +90,32 @@ const RevealText: React.FC = () => {
             <br className="hidden md:block" />
             WITHOUT CHASING IT
           </h2>
+
+          {/* Mobile glitter/pulse effect */}
+          {isMobile && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="w-20 h-20 rounded-full animate-pulse bg-[radial-gradient(circle,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0)_70%)]" />
+            </div>
+          )}
         </div>
 
-        {/* vignette overlay */}
-        <div
-          ref={overlayRef}
-          className="pointer-events-none absolute inset-0 opacity-0"
-        >
-          <div className="absolute inset-0 bg-[radial-gradient(110%_80%at_50%_20%,_rgba(255,255,255,0.06),_rgba(0,0,0,0.75)_60%,_#000_95%)]" />
-        </div>
+        {/* Desktop overlay + spotlight */}
+        {!isMobile && (
+          <>
+            {/* vignette overlay */}
+            <div ref={overlayRef} className="pointer-events-none absolute inset-0 opacity-0">
+              <div className="absolute inset-0 bg-[radial-gradient(110%_80%at_50%_20%,_rgba(255,255,255,0.06),_rgba(0,0,0,0.75)_60%,_#000_95%)]" />
+            </div>
 
-        {/* spotlight boom */}
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <div
-            ref={spotlightRef}
-            className="w-[200px] h-[200px] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0)_70%)]"
-          />
-        </div>
+            {/* spotlight boom */}
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+              <div
+                ref={spotlightRef}
+                className="w-[200px] h-[200px] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0)_70%)]"
+              />
+            </div>
+          </>
+        )}
       </div>
     </section>
   );
