@@ -13,7 +13,7 @@ import { ToastContainer } from 'react-toastify'
 import ChatBot from './Chatbot'
 
 createRoot(document.getElementById('root')!).render(
-  <BrowserRouter>
+  <BrowserRouter basename="/parismystery">
    <ToastContainer position="top-center" autoClose={3000} />
   <Navbar/>
   <Routes>
