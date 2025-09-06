@@ -42,7 +42,7 @@ const PerfumeAd: React.FC = () => {
               w-[150px] sm:w-[200px] md:w-[300px]
               h-auto
               max-w-full
-              z-50
+              z-10
               object-contain
               pointer-events-none
             "
