@@ -3,8 +3,8 @@ import { motion } from "framer-motion";
 
 // Example scent bottle images
 import scent1 from "./assets/scent2.png";
-import scent2 from "./assets/scent3.png";
-import scent3 from "./assets/scent4.png";
+import scent2 from "./assets/scent3.avif";
+import scent3 from "./assets/scent4.avif";
 
 interface Product {
   id: number;
