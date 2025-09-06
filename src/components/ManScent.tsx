@@ -18,25 +18,19 @@ const TerraSection: React.FC = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
-  // Cart state
   const [cart, setCart] = useState<Product[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [note, setNote] = useState<string>("");
 
-  // Load cart from localStorage
   useEffect(() => {
     const storedCart = localStorage.getItem("mensCollectionCart");
-    if (storedCart) {
-      setCart(JSON.parse(storedCart));
-    }
+    if (storedCart) setCart(JSON.parse(storedCart));
   }, []);
 
-  // Save cart to localStorage
   useEffect(() => {
     localStorage.setItem("mensCollectionCart", JSON.stringify(cart));
   }, [cart]);
 
-  // Terra product data
   const terraProduct: Product = {
     id: 101,
     name: "Atlas (Terra)",
@@ -85,7 +79,7 @@ const TerraSection: React.FC = () => {
         initial={{ opacity: 0, y: 40 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.9, ease: "easeOut" }}
-        className="relative md:w-[600px] space-y-6 max-w-xl z-20"
+        className="relative md:w-[600px] space-y-6 max-w-xl z-20 w-full"
       >
         <h1 className="text-6xl md:text-7xl font-semibold tracking-tight font-serif">
           Atlas
@@ -138,7 +132,17 @@ const TerraSection: React.FC = () => {
         transition={{ duration: 1, ease: "easeOut" }}
         className="relative flex justify-center mt-12 md:mt-0 w-full h-full"
       >
-       <img src={man} alt="Terra Perfume Visual" className="absolute -top-95 -left-40 z-10 object-contain w-[90%] md:w-[1050px] max-w-none drop-shadow-[0_40px_80px_rgba(0,0,0,0.7)]" />
+        <img
+          src={man}
+          alt="Terra Perfume Visual"
+          className="
+            relative md:absolute 
+            w-full max-w-[500px] sm:max-w-[700px] 
+            md:w-[1050px] md:max-w-none 
+            drop-shadow-[0_40px_80px_rgba(0,0,0,0.7)] 
+            -top-90 left-20 md:-top-95 md:-left-40
+          "
+        />
       </motion.div>
 
       {/* Dialog (Modal) */}
@@ -153,12 +157,8 @@ const TerraSection: React.FC = () => {
                 className="w-20 h-20 object-cover rounded"
               />
               <div>
-                <h3 className="text-lg font-semibold">
-                  {selectedProduct.name}
-                </h3>
-                <p className="text-sm text-gray-600">
-                  {selectedProduct.price}
-                </p>
+                <h3 className="text-lg font-semibold">{selectedProduct.name}</h3>
+                <p className="text-sm text-gray-600">{selectedProduct.price}</p>
               </div>
             </div>
 

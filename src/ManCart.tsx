@@ -20,15 +20,11 @@ const ManCart: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [note, setNote] = useState<string>("");
 
-  // Load cart from localStorage
   useEffect(() => {
     const storedCart = localStorage.getItem("mensCollectionCart");
-    if (storedCart) {
-      setCart(JSON.parse(storedCart));
-    }
+    if (storedCart) setCart(JSON.parse(storedCart));
   }, []);
 
-  // Save cart to localStorage
   useEffect(() => {
     localStorage.setItem("mensCollectionCart", JSON.stringify(cart));
   }, [cart]);
@@ -79,57 +75,59 @@ const ManCart: React.FC = () => {
   };
 
   return (
-    <section className="bg-black text-white py-16 px-6 md:px-12 mt-20">
+    <section className="bg-black text-white py-16 px-4 md:px-12 mt-20">
       {/* Heading */}
-      <div className="text-center mb-10">
-        <h2 className="text-3xl md:text-7xl font-serif font-extrabold tracking-wide">
+      <div className="text-center mb-10 px-4">
+        <h2 className="text-3xl sm:text-4xl md:text-7xl font-serif font-extrabold tracking-wide">
           Men’s Collection
         </h2>
-        <p className="text-gray-400 mt-2 text-sm font-['Poppins']">
+        <p className="text-gray-400 mt-2 text-sm sm:text-base font-['Poppins']">
           Subtle. Refined. Crafted for the modern man.
         </p>
       </div>
 
-      {/* Carousel */}
-      <div className="flex flex-wrap gap-20 overflow-x-auto scrollbar-hide pb-4 mx-10">
+      {/* Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
         {products.map((product) => (
           <motion.div
             key={product.id}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="min-w-[300px] bg-[#111] rounded-xl shadow-md flex flex-col overflow-hidden"
+            className="w-full bg-[#111] rounded-xl shadow-md flex flex-col overflow-hidden"
           >
-            {/* Image (full cover at top) */}
-            <div className="w-full h-75 bg-gray-900">
+            {/* Image */}
+            <div className="w-full">
               <img
                 src={product.image}
                 alt={product.name}
-                className="w-full h-full object-cover"
+                className="
+                  w-full
+                  h-64 sm:h-72 md:h-80 lg:h-96
+                  sm:object-cover
+                  rounded-t-xl
+                "
               />
             </div>
 
             {/* Text content */}
             <div className="p-4 flex-1 flex flex-col justify-between">
-              {/* Name + Price */}
               <div className="flex justify-between items-center mb-2">
-                <h3 className="text-[20px] font-extrabold font-serif">
+                <h3 className="text-xl sm:text-2xl font-extrabold font-serif">
                   {product.name}
                 </h3>
-                <p className="text-[20px] font-extrabold font-['Popppins']">
+                <p className="text-lg sm:text-xl font-semibold font-['Poppins']">
                   {product.price}
                 </p>
               </div>
 
-              {/* Description */}
-              <p className="text-[16px] font-['Poppins'] text-gray-400">
+              <p className="text-sm sm:text-base font-['Poppins'] text-gray-400">
                 {product.description}
               </p>
 
-              {/* Add to Cart Button */}
               <button
                 onClick={() => openDialog(product)}
-                className="w-full mt-3 py-2 bg-white text-black text-sm font-medium rounded-md hover:bg-gray-200 transition-colors"
+                className="w-full mt-4 py-2 bg-white text-black text-sm sm:text-base font-medium rounded-md hover:bg-gray-200 transition-colors"
               >
                 + Add to Cart
               </button>
@@ -138,11 +136,10 @@ const ManCart: React.FC = () => {
         ))}
       </div>
 
-      {/* Dialog (Modal) */}
+      {/* Dialog */}
       {selectedProduct && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 font-['Poppins']">
-          <div className="bg-white text-black rounded-xl w-96 p-6 relative">
-            {/* Product Preview */}
+          <div className="bg-white text-black rounded-xl w-11/12 sm:w-96 p-6 relative">
             <div className="flex items-center gap-4 mb-4">
               <img
                 src={selectedProduct.image}
@@ -155,7 +152,6 @@ const ManCart: React.FC = () => {
               </div>
             </div>
 
-            {/* Gift Message */}
             <textarea
               placeholder="Add a private note (optional)"
               className="w-full p-2 border rounded-md text-sm mb-4 resize-none"
@@ -164,7 +160,6 @@ const ManCart: React.FC = () => {
               onChange={(e) => setNote(e.target.value)}
             />
 
-            {/* Actions */}
             <div className="flex justify-end gap-3">
               <button
                 onClick={closeDialog}
