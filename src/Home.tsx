@@ -12,10 +12,10 @@ import FooterVideo from './components/FooterVideo'
 
 const Home: React.FC = () => {
   return (
-    <div>
+    <div className='w-full h-screen'>
       <Hero/>
       <RevealText/>
-      <StartPage/>
+     <StartPage/>
        <EssenceHero/>
        <TerraSection/>
        <WomenScent/>
